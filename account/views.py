@@ -1,5 +1,4 @@
 from rest_framework.generics import ListCreateAPIView
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import EmailMessage, get_connection
 from django_filters import rest_framework as filters

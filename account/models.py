@@ -23,4 +23,4 @@ class User(AbstractUser):
     def distance(self):
         current_user_location = (self.latitude, self.longitude)
         for user in User.objects.all().exclude(id=self.id):
-            return float(great_circle(current_user_location, (user.latitude, user.longitude)).km)
+            return great_circle(current_user_location, (user.latitude, user.longitude)).km
