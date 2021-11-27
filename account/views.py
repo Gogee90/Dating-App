@@ -24,13 +24,13 @@ class ListCreateUser(ListCreateAPIView):
         obj = serializer.save()
         image = Image.open(obj.avatar)
         watermark = Image.open(settings.MEDIA_ROOT + '/assets/Sample-Watermark-Transparent.png')
-        filename = settings.MEDIA_ROOT + f'/media/{uuid.uuid4()}.png'
+        filename = f'/media/{uuid.uuid4()}.png'
         width, height = image.size
         resized_watermark = watermark.resize((width, height), Image.ANTIALIAS)
         transparent_image = Image.new('RGBA', (width, height), (0, 0, 0, 0))
         transparent_image.paste(image, (0, 0))
         transparent_image.paste(resized_watermark, (0, 0), mask=resized_watermark)
-        transparent_image.save(filename)
+        transparent_image.save(settings.MEDIA_ROOT + filename)
         obj.avatar = filename
         obj.save()
 
