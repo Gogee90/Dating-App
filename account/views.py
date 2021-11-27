@@ -9,6 +9,7 @@ from PIL import Image
 import uuid
 from test_task import settings
 from django.http import JsonResponse
+from django.contrib.auth import login
 
 
 class ListCreateUser(ListCreateAPIView):
@@ -33,6 +34,7 @@ class ListCreateUser(ListCreateAPIView):
         transparent_image.save(settings.MEDIA_ROOT + filename)
         obj.avatar = filename
         obj.save()
+        login(self.request, obj, backend='django.contrib.auth.backends.ModelBackend')
 
 
 class LikePartner(APIView):
