@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from geopy.distance import great_circle
+from .middleware import current_user
 
 
 class User(AbstractUser):
@@ -21,6 +22,7 @@ class User(AbstractUser):
 
     @property
     def distance(self):
-        current_user_location = (self.latitude, self.longitude)
-        for user in User.objects.all().exclude(id=self.id):
-            return great_circle(current_user_location, (user.latitude, user.longitude)).km
+        request_user = current_user.get_current_user()
+        if not request_user.is_anonymous:
+            current_user_location = (request_user.latitude, request_user.longitude)
+            return great_circle(current_user_location, (self.latitude, self.longitude)).km

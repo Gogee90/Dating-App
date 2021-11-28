@@ -5,8 +5,8 @@ from .models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'distance', 'username', 'email', 'first_name', 'last_name', 'password', 'avatar', 'is_active',
-                  'gender', 'latitude', 'longitude']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'password', 'avatar', 'is_active',
+                  'gender', 'latitude', 'longitude', 'distance']
 
     def create(self, validated_data):
         user = User.objects.create_user(username=validated_data['username'], password=validated_data['password'],
