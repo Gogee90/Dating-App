@@ -33,4 +33,5 @@ class User(AbstractUser):
 
 @receiver(pre_save, sender=User)
 def user_pre_save(instance, sender, **kwargs):
-    instance.avatar = create_watermarked_picture(instance.avatar)
+    if instance.avatar:
+        instance.avatar = create_watermarked_picture(instance.avatar)
