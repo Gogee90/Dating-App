@@ -1,7 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from geopy.distance import great_circle
 from .middleware import current_user
+from .utils.create_watermarked_picture import create_watermarked_picture
 
 
 class User(AbstractUser):
@@ -26,3 +29,8 @@ class User(AbstractUser):
         if not request_user.is_anonymous:
             current_user_location = (request_user.latitude, request_user.longitude)
             return great_circle(current_user_location, (self.latitude, self.longitude)).km
+
+
+@receiver(pre_save, sender=User)
+def user_pre_save(instance, sender, **kwargs):
+    instance.avatar = create_watermarked_picture(instance.avatar)

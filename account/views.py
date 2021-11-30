@@ -5,11 +5,7 @@ from django_filters import rest_framework as filters
 from .filters import UserFilter
 from .models import User
 from .serializers import UserSerializer
-from PIL import Image
-import uuid
-from test_task import settings
 from django.http import JsonResponse
-from django.contrib.auth import login
 
 
 class ListCreateUser(ListCreateAPIView):
@@ -20,21 +16,6 @@ class ListCreateUser(ListCreateAPIView):
     def get_queryset(self):
         queryset = User.objects.all().exclude(username=self.request.user.username)
         return queryset
-
-    def perform_create(self, serializer):
-        obj = serializer.save()
-        image = Image.open(obj.avatar)
-        watermark = Image.open(settings.MEDIA_ROOT + '/assets/Sample-Watermark-Transparent.png')
-        filename = f'/media/{uuid.uuid4()}.png'
-        width, height = image.size
-        resized_watermark = watermark.resize((width, height), Image.ANTIALIAS)
-        transparent_image = Image.new('RGBA', (width, height), (0, 0, 0, 0))
-        transparent_image.paste(image, (0, 0))
-        transparent_image.paste(resized_watermark, (0, 0), mask=resized_watermark)
-        transparent_image.save(settings.MEDIA_ROOT + filename)
-        obj.avatar = filename
-        obj.save()
-        login(self.request, obj, backend='django.contrib.auth.backends.ModelBackend')
 
 
 class LikePartner(APIView):
